@@ -1,0 +1,24 @@
+{
+  "name": "tenuki-web-client",
+  "version": "0.1.0",
+  "description": "Tenuki static web client",
+  "main": "tenuki/app.js",
+  "scripts": {
+    "start": "webpack-dev-server --content-base=tenuki"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tenuki-gs/tenuki-web-client.git"
+  },
+  "author": "",
+  "license": "UNLICENSED",
+  "private": true,
+  "bugs": {
+    "url": "https://github.com/tenuki-gs/tenuki-web-client/issues"
+  },
+  "homepage": "https://github.com/tenuki-gs/tenuki-web-client#readme",
+  "devDependencies": {
+    "webpack": "^1.13.0",
+    "webpack-dev-server": "^1.14.1"
+  }
+}
