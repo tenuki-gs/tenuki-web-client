@@ -4,5 +4,13 @@ module.exports = {
         publicPath: '/',
         path: 'build/',
         filename: 'bundle.js'
+    },
+    module: {
+      loaders: [
+        {
+          test: /\.scss$/,
+          loaders: ['style', 'css', 'sass']
+        }
+      ]
     }
 };
