@@ -9,7 +9,13 @@ var db = new Firebase('https://crackling-heat-815.firebaseio.com/');
 var gamesRef = db.child('games');
 
 // Listen to a particular game.
-var gameID = 'dev';
+var gameID;
+if (document.location.hash) {
+    gameID = document.location.hash.replace(/^#\//, '');
+} else {
+    gameID = Math.random() * 100000000000000000;
+    document.location = '#/' + gameID;
+}
 var gameRef = gamesRef.child(gameID)
 
 var Moves = React.createClass({
@@ -50,11 +56,46 @@ var Position = React.createClass({
         });
     },
     render: function () {
+        var symbol = '';
+        if (this.props.y == 1) {
+            if (this.props.x == 1) {
+                symbol = '┌';
+            } else if (this.props.x == 19) {
+                symbol = '┐';
+            } else {
+                symbol = '┬';
+            }
+        } else if (this.props.y == 19) {
+            if (this.props.x == 1) {
+                symbol = '└';
+            } else if (this.props.x == 19) {
+                symbol = '┘';
+            } else {
+                symbol = '┴';
+            }
+        } else {
+            if (this.props.x == 1) {
+                symbol = '├';
+            } else if (this.props.x == 19) {
+                symbol = '┤';
+            } else {
+                symbol = '┼';
+            }
+        }
+        var symbols = [symbol];
+        if (this.props.move == 'b') {
+            symbols.push('⚫');
+        } else if (this.props.move == 'w') {
+            symbols.push('⚪');
+        }
+
         return (
             <div
                 className="position"
                 onClick={this.handleClick}>
-               {this.props.x}, {this.props.y}
+                {symbols.map(s => {
+                    return <span className="symbol" key={s}>{s}</span>
+                })}
             </div>
         );
     }
@@ -78,31 +119,40 @@ var Board = React.createClass({
             }
         };
     },
-    componentDidMove: function () {
-        gameRef.on('value', function (gameSnapshot) {
-            var game = gameSnapshot.val();
-
+    componentDidMount: function () {
+        gameRef.transaction(game => {
             if (game === null) {
-                // Create a new game.
-                game = this.state.game;
-                gameRef.set(game);
+                // Create a new game based on the default state.
+                return this.state.game;
             }
-
-            this.setState({game: game})
+        });
+        gameRef.on('value', gameSnapshot => {
+            var game = gameSnapshot.val();
+            if (!game) {
+                return;
+            }
+            this.setState({game: game});
         });
     },
     render: function () {
         var game = this.state.game;
         var positions = [];
+        var moveByPosition = {};
 
-        for (var y = 0; y < game.rules.board.height; ++y) {
+        var turn = 0;
+        for (var moveKey in game.moves) {
+            var move = game.moves[moveKey];
+            moveByPosition[move.x + ',' + move.y] = turn++ % 2 ? 'w' : 'b';
+        }
+
+        for (var y = 1; y <= game.rules.board.height; ++y) {
             var row = [];
-            for (var x = 0; x < game.rules.board.width; ++x) {
+            for (var x = 1; x <= game.rules.board.width; ++x) {
                 row.push(
                     <Position
-                        key={x + ':' + y}
-                        x={x + 1}
-                        y={y + 1}
+                        key={x + ',' + y}
+                        x={x} y={y}
+                        move={moveByPosition[x + ',' + y]}
                     />
                 )
             }
@@ -111,8 +161,12 @@ var Board = React.createClass({
 
         return (
             <div className="board">
-                <div className="moves"><Moves /></div>
-                {positions}
+                <div className="moves">
+                    Game ID: {this.state.game.id}
+                    <br /><br />
+                    <Moves />
+                </div>
+                <div className="positions">{positions}</div>
             </div>
         );
     }
