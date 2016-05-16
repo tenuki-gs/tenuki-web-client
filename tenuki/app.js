@@ -5,8 +5,7 @@ import ReactDOM from 'react-dom';
 var Firebase = require('firebase');
 
 // Hook up to our database and initialize it.
-var db = new Firebase('https://crackling-heat-815.firebaseio.com/');
-var gamesRef = db.child('games');
+var rootRef = new Firebase('https://crackling-heat-815.firebaseio.com/');
 
 // Listen to a particular game.
 var gameID;
@@ -16,7 +15,7 @@ if (document.location.hash) {
     gameID = Math.random() * 100000000000000000;
     document.location = '#/' + gameID;
 }
-var gameRef = gamesRef.child(gameID)
+var gameRef = rootRef.child('games/' + gameID);
 
 var Moves = React.createClass({
     getInitialState: function () {
@@ -56,33 +55,46 @@ var Position = React.createClass({
         });
     },
     render: function () {
+        var symbols = [];
         var symbol = '';
-        if (this.props.y == 1) {
-            if (this.props.x == 1) {
+        let {x: x, y: y} = this.props;
+
+        if (y == 1) {
+            // This is the top of the board.
+            if (x == 1) {
                 symbol = '┌';
-            } else if (this.props.x == 19) {
+            } else if (x == 19) {
                 symbol = '┐';
             } else {
                 symbol = '┬';
             }
-        } else if (this.props.y == 19) {
-            if (this.props.x == 1) {
+        } else if (y == 19) {
+            // This is the bottom of the board.
+            if (x == 1) {
                 symbol = '└';
-            } else if (this.props.x == 19) {
+            } else if (x == 19) {
                 symbol = '┘';
             } else {
                 symbol = '┴';
             }
         } else {
-            if (this.props.x == 1) {
+            // This is somewhere in the middle.
+            if (x == 1) {
                 symbol = '├';
-            } else if (this.props.x == 19) {
+            } else if (x == 19) {
                 symbol = '┤';
             } else {
                 symbol = '┼';
             }
         }
-        var symbols = [symbol];
+        symbols.push(symbol);
+
+        if ((x == 4 || x == 10 || x == 16) &&
+            (y == 4 || y == 10 || y == 16)) {
+            // This is a star point.
+            symbols.push('✦');
+        }
+
         if (this.props.move == 'b') {
             symbols.push('⚫');
         } else if (this.props.move == 'w') {
