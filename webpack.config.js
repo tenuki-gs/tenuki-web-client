@@ -1,3 +1,5 @@
+var path = require('path');
+
 module.exports = {
     entry: './tenuki/app.js',
     resolve: {
@@ -12,11 +14,14 @@ module.exports = {
         loaders: [
             {
                 test: /\.scss$/,
-                loaders: ['style', 'css', 'sass']
+                loaders: ['style', 'css', 'sass'],
             },
             {
                 test: /\.js$/,
                 loader: 'babel',
+                include: [
+                    path.resolve(__dirname, 'tenuki')
+                ]
             }
         ]
     }
