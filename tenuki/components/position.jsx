@@ -1,17 +1,6 @@
 import React, { Component } from 'react';
 
 export default class Position extends Component{
-    handleClick () {
-        console.log('click', this.props);
-
-        this.props.gameRef.child('moves').push({
-            dateCreated: Firebase.ServerValue.TIMESTAMP,
-            type: 'click',
-            x: this.props.x,
-            y: this.props.y
-        });
-    }
-
     render () {
         var symbols = [];
         var symbol = '';
@@ -62,7 +51,7 @@ export default class Position extends Component{
         return (
             <div
                 className="position"
-                onClick={this.handleClick.bind(this)}>
+                onClick={this.props.onMove.bind(this)}>
                 {symbols.map(s => {
                     return <span className="symbol" key={s}>{s}</span>
                 })}
