@@ -58,13 +58,13 @@ gameRef.child('moves').on('child_added', moveSnapshot => {
 });
 
 function onMove () {
-    console.log('click', this.props);
+    console.log('click', this);
 
     gameRef.child('moves').push({
         dateCreated: Firebase.ServerValue.TIMESTAMP,
         type: 'click',
-        x: this.props.x,
-        y: this.props.y
+        x: this.x,
+        y: this.y 
     });
 }
 

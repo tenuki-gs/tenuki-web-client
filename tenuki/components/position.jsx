@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 
 export default class Position extends Component{
+    onClick () {
+        this.props.onMove('click', this.props.x, this.props.y);
+    }
+
     render () {
         var symbols = [];
         var symbol = '';
@@ -51,7 +55,7 @@ export default class Position extends Component{
         return (
             <div
                 className="position"
-                onClick={this.props.onMove.bind(this)}>
+                onClick={this.onClick.bind(this)}>
                 {symbols.map(s => {
                     return <span className="symbol" key={s}>{s}</span>
                 })}
