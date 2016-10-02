@@ -2,6 +2,13 @@
 
 A static web application
 
+## Running
+
+```bash
+npm install
+npm start
+```
+
 ## Deploying
 
 ```bash
