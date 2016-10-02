@@ -6,7 +6,7 @@ export default class Board extends Component{
     constructor(props) {
         super(props);
     }
-    
+
     render () {
         var game = this.props.game;
         var positions = [];
@@ -24,7 +24,7 @@ export default class Board extends Component{
                 row.push(
                     <Position
                         game={this.props.game}
-                        onMove={this.props.onMove}
+                        onMove={this.props.game.addMove}
                         key={x + ',' + y}
                         x={x} y={y}
                         move={moveByPosition[x + ',' + y]}

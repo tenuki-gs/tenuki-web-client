@@ -8,7 +8,7 @@ export default class Moves extends Component{
     render () {
         return <div>{this.props.game.moves.map(move => {
             return (
-                <div key={move.key}>
+                <div key={move.dateCreated}>
                     {move.dateCreated} - {move.type} @ {move.x}, {move.y}
                 </div>
             );
