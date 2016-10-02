@@ -8,10 +8,16 @@ header {
     margin-bottom: 30px;
 }
 
-.board {
+.game {
+    display: flex;
+
+    .surface {
+      flex: 3;
+    }
+
     .moves {
         // This div is just for debugging.
-        float: right;
+        flex: 1;
     }
 
     .row {

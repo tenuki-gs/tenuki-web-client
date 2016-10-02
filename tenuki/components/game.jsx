@@ -1,47 +1,21 @@
 import React, { Component } from 'react';
 import Position from './position';
 import Moves from './moves';
+import Board from './board';
 
 export default class Game extends Component{
-    constructor(props) {
-        super(props);
-    }
-    
-    render () {
-        var game = this.props.game;
-        var positions = [];
-        var moveByPosition = {};
-
-        var turn = 0;
-        for (var moveKey in game.moves) {
-            var move = game.moves[moveKey];
-            moveByPosition[move.x + ',' + move.y] = turn++ % 2 ? 'w' : 'b';
-        }
-
-        for (var y = 1; y <= game.rules.board.height; ++y) {
-            var row = [];
-            for (var x = 1; x <= game.rules.board.width; ++x) {
-                row.push(
-                    <Position
-                        game={this.props.game}
-                        onMove={this.props.onMove}
-                        key={x + ',' + y}
-                        x={x} y={y}
-                        move={moveByPosition[x + ',' + y]}
-                    />
-                )
-            }
-            positions.push(<div key={y} className="row">{row}</div>);
-        }
-
+    render() {
         return (
-            <div className="board">
+            <div className="game">
+                <Board
+                    game={this.props.game}
+                    onMove={this.props.onMove}
+                />
                 <div className="moves">
                     Game ID: {this.props.game.id}
                     <br /><br />
                     <Moves game={this.props.game}/>
                 </div>
-                <div className="positions">{positions}</div>
             </div>
         );
     }
