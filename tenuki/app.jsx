@@ -47,14 +47,14 @@ gameRef.on('value', gameSnapshot => {
 
 var moves = [];
 gameRef.child('moves').on('child_added', moveSnapshot => {
-    ReactDOM.render(
-        <Board game={game} onMove={onMove} />,
-        document.getElementById('content')
-    );
     var move = moveSnapshot.val();
     move.key = moveSnapshot.key();
     console.log('child_added', move, moves);
     game.moves = game.moves.concat([move])
+    ReactDOM.render(
+        <Board game={game} onMove={onMove} />,
+        document.getElementById('content')
+    );
 });
 
 function onMove () {
