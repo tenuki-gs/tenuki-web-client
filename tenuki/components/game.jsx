@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Position from './position';
 import Moves from './moves';
 
-export default class Board extends Component{
+export default class Game extends Component{
     constructor(props) {
         super(props);
     }

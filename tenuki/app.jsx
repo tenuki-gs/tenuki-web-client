@@ -2,7 +2,7 @@ require("./stylesheets/styles.scss");
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Board from './components/board';
+import Game from './components/game';
 
 var Firebase = require('firebase');
 
@@ -52,7 +52,7 @@ gameRef.child('moves').on('child_added', moveSnapshot => {
     console.log('child_added', move, moves);
     game.moves = game.moves.concat([move])
     ReactDOM.render(
-        <Board game={game} onMove={onMove} />,
+        <Game game={game} onMove={onMove} />,
         document.getElementById('content')
     );
 });
@@ -69,7 +69,7 @@ function onMove () {
 }
 
 ReactDOM.render(
-    <Board game={game} onMove={onMove} />,
+    <Game game={game} onMove={onMove} />,
     document.getElementById('content')
 );
 
