@@ -1,9 +1,9 @@
 var path = require('path');
 
 module.exports = {
-    entry: './tenuki/app.js',
+    entry: './tenuki/app.jsx',
     resolve: {
-        extensions: ['', '.js']
+        extensions: ['', '.js', '.jsx']
     },
     output: {
         publicPath: '/',
@@ -22,7 +22,11 @@ module.exports = {
                 include: [
                     path.resolve(__dirname, 'tenuki')
                 ]
-            }
+            },
+            {
+                test: /\.jsx$/,
+                loaders: ['babel-loader']
+            },
         ]
     }
 };
