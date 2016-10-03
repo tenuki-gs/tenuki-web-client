@@ -5,26 +5,26 @@ export default class Surface extends Component{
         var game = this.props.game;
         const lines = [];
 
-        for (var y = 1; y < game.rules.board.height; ++y) {
+        for (var y = 0.5; y < game.rules.board.height; ++y) {
             lines.push(
                 <line
                     x1="0.5"
-                    y1={y+0.5}
-                    x2={game.rules.board.height - 1.5}
-                    y2={y+0.5}
+                    y1={y}
+                    x2={game.rules.board.height - 0.5}
+                    y2={y}
                     stroke="black"
                     strokeWidth="0.1"
                 />
             )
         }
 
-        for (var x = 1; x < game.rules.board.width; ++x) {
+        for (var x = 0.5; x < game.rules.board.width; ++x) {
             lines.push(
                 <line
-                    x1={x+0.5}
+                    x1={x}
                     y1="0.5"
-                    x2={x+0.5}
-                    y2={game.rules.board.width - 1.5}
+                    x2={x}
+                    y2={game.rules.board.width - 0.5}
                     stroke="black"
                     strokeWidth="0.1"
                 />
