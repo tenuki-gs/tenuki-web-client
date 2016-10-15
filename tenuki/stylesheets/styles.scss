@@ -12,7 +12,20 @@ header {
     display: flex;
 
     .surface {
-      flex: 3;
+        flex: 3;
+        .space {
+            pointer-events: all;
+            fill-opacity: 0;
+        }
+        .space:hover {
+            fill: red;
+            fill-opacity: 1;
+        }
+        svg {
+            text {
+                transform: translate(0px, 1px);
+            }
+        }
     }
 
     .moves {

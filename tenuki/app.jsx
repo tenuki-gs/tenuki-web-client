@@ -23,7 +23,7 @@ var game = {
     rules: {
         board: {
             width: 19,
-            height: 19       
+            height: 19
         },
         scoring: 'japanese'
     },
@@ -57,14 +57,14 @@ gameRef.child('moves').on('child_added', moveSnapshot => {
     );
 });
 
-function onMove () {
-    console.log('click', this);
+function onMove (x, y) {
+    console.log('click', x, y);
 
     gameRef.child('moves').push({
         dateCreated: Firebase.ServerValue.TIMESTAMP,
         type: 'click',
-        x: this.x,
-        y: this.y 
+        x: x,
+        y: y
     });
 }
 
