@@ -7,7 +7,7 @@ export default class Surface extends Component{
     }
 
     onClick (x, y) {
-        this.props.onMove(x, y);
+        this.props.onMove({x, y});
     }
 
     render() {
