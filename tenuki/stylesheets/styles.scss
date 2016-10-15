@@ -14,12 +14,11 @@ header {
     .surface {
         flex: 3;
         .space {
-            pointer-events: all;
             fill-opacity: 0;
         }
         .space:hover {
             fill: red;
-            fill-opacity: 1;
+            fill-opacity: 0.5;
         }
         svg {
             width: 100%;
