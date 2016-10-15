@@ -2,7 +2,7 @@ require("./stylesheets/styles.scss");
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Board from './components/board';
+import Game from './components/game';
 
 var Firebase = require('firebase');
 
@@ -23,7 +23,7 @@ var game = {
     rules: {
         board: {
             width: 19,
-            height: 19       
+            height: 19
         },
         scoring: 'japanese'
     },
@@ -52,24 +52,24 @@ gameRef.child('moves').on('child_added', moveSnapshot => {
     console.log('child_added', move, moves);
     game.moves = game.moves.concat([move])
     ReactDOM.render(
-        <Board game={game} onMove={onMove} />,
+        <Game game={game} onMove={onMove} />,
         document.getElementById('content')
     );
 });
 
-function onMove () {
-    console.log('click', this);
+function onMove (x, y) {
+    console.log('click', x, y);
 
     gameRef.child('moves').push({
         dateCreated: Firebase.ServerValue.TIMESTAMP,
         type: 'click',
-        x: this.x,
-        y: this.y 
+        x: x,
+        y: y
     });
 }
 
 ReactDOM.render(
-    <Board game={game} onMove={onMove} />,
+    <Game game={game} onMove={onMove} />,
     document.getElementById('content')
 );
 
