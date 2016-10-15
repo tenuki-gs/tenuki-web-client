@@ -15,14 +15,14 @@ export default class Surface extends Component{
         const lines = [];
         const spaces = [];
 
-        for (var y = 0; y <= game.rules.board.height; ++y) {
-            for (var x = 0; x <= game.rules.board.width; ++x) {
+        for (var y = 1; y <= game.rules.board.height; ++y) {
+            for (var x = 1; x <= game.rules.board.width; ++x) {
                 spaces.push(
                     <rect
                         x={x}
                         y={y}
-                        height="1px"
-                        width="1px"
+                        height="1"
+                        width="1"
                         onClick={this.onClick.bind(this, x, y)}
                         className="space"
                     />
@@ -91,8 +91,8 @@ export default class Surface extends Component{
         return (
             <g>
                 <rect x="1" y="1" width="100%" height="100%" fill="#f6b851"/>
-                {spaces}
                 {lines}
+                {spaces}
                 {moves}
             </g>
         )
