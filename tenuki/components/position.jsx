@@ -7,7 +7,7 @@ export default class Position extends Component{
     }
 
     onClick () {
-        this.props.onMove('click', this.props.x, this.props.y);
+        this.props.onMove({x: this.props.x, y: this.props.y});
     }
 
     render () {

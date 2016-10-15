@@ -3,7 +3,7 @@ import Position from './position';
 import Surface from './surface';
 
 export default class Board extends Component{
-    render() {
+    render () {
         var game = this.props.game;
         var positions = [];
         var moveByPosition = {};

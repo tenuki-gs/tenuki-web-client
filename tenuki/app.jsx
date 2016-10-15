@@ -2,9 +2,11 @@ require("./stylesheets/styles.scss");
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Game from './components/game';
+import Firebase from 'firebase';
 
-var Firebase = require('firebase');
+import Board from './components/board';
+import Game from './components/game';
+import {FirebaseGoGame} from './models/game';
 
 // Hook up to our database and initialize it.
 var rootRef = new Firebase('https://crackling-heat-815.firebaseio.com/');
@@ -18,59 +20,14 @@ if (document.location.hash) {
     document.location = '#/' + gameID;
 }
 var gameRef = rootRef.child('games/' + gameID);
-var game = {
-    id: gameID,
-    rules: {
-        board: {
-            width: 19,
-            height: 19
-        },
-        scoring: 'japanese'
-    },
-    players: {},
-    moves: []
-};
 
-gameRef.transaction(game => {
-    if (game === null) {
-        // Create a new game based on the default state.
-        return game;
-    }
-});
+let game = new FirebaseGoGame(gameRef);
 
-gameRef.on('value', gameSnapshot => {
-    var game = gameSnapshot.val();
-    if (!game) {
-        return;
-    }
-});
-
-var moves = [];
-gameRef.child('moves').on('child_added', moveSnapshot => {
-    var move = moveSnapshot.val();
-    move.key = moveSnapshot.key();
-    console.log('child_added', move, moves);
-    game.moves = game.moves.concat([move])
+game.onChange(function () {
     ReactDOM.render(
-        <Game game={game} onMove={onMove} />,
+        <Game game={this} onMove={this.addMove} />,
         document.getElementById('content')
     );
 });
-
-function onMove (x, y) {
-    console.log('click', x, y);
-
-    gameRef.child('moves').push({
-        dateCreated: Firebase.ServerValue.TIMESTAMP,
-        type: 'click',
-        x: x,
-        y: y
-    });
-}
-
-ReactDOM.render(
-    <Game game={game} onMove={onMove} />,
-    document.getElementById('content')
-);
 
 console.log("play somewhere else");
