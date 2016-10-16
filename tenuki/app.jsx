@@ -8,9 +8,6 @@ import Board from './components/board';
 import Game from './components/game';
 import {FirebaseGoGame} from './models/game';
 
-// Hook up to our database and initialize it.
-var rootRef = new Firebase('https://crackling-heat-815.firebaseio.com/');
-
 // Listen to a particular game.
 var gameID;
 if (document.location.hash) {
@@ -19,15 +16,12 @@ if (document.location.hash) {
     gameID = Math.random() * 100000000000000000;
     document.location = '#/' + gameID;
 }
-var gameRef = rootRef.child('games/' + gameID);
 
-let game = new FirebaseGoGame(gameRef);
+let game = new FirebaseGoGame(gameID);
 
-game.onChange(function () {
-    ReactDOM.render(
-        <Game game={this} onMove={this.addMove} />,
-        document.getElementById('content')
-    );
-});
+ReactDOM.render(
+    <Game game={game} />,
+    document.getElementById('content')
+);
 
 console.log("play somewhere else");
