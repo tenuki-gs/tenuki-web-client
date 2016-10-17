@@ -27,7 +27,7 @@ export default class Surface extends Component{
                     stroke="black"
                     strokeWidth="0.05"
                 />
-            )
+            );
         }
 
         for (var x = 1.5; x <= width + 0.5; ++x) {
@@ -40,7 +40,7 @@ export default class Surface extends Component{
                     stroke="black"
                     strokeWidth="0.1"
                 />
-            )
+            );
         }
 
         for (var y = 1; y <= height; ++y) {
@@ -57,7 +57,7 @@ export default class Surface extends Component{
                         onClick={this.onClick.bind(this, x, y)}
                         className="space"
                     />
-                )
+                );
 
                 if (position.move) {
                     moves.push(
@@ -66,7 +66,17 @@ export default class Surface extends Component{
                             y={y}
                             fontSize="1"
                         >{position.move.stone}</text>
-                    )
+                    );
+                }
+
+                for (let mark of position.marks) {
+                    moves.push(
+                        <text
+                            x={x}
+                            y={y}
+                            fontSize="1"
+                        >{mark}</text>
+                    );
                 }
             }
         }
