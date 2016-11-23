@@ -21,12 +21,11 @@ export default class Board extends Component{
         for (var y = 1.5; y <= height + 0.5; ++y) {
             lines.push(
                 <line
+                    key={`row-${y}`}
                     x1="1.5"
                     y1={y}
                     x2={height + 0.5}
                     y2={y}
-                    stroke="black"
-                    strokeWidth="0.05"
                 />
             )
         }
@@ -34,12 +33,11 @@ export default class Board extends Component{
         for (var x = 1.5; x <= width + 0.5; ++x) {
             lines.push(
                 <line
+                    key={`column-${x}`}
                     x1={x}
                     y1="1.5"
                     x2={x}
                     y2={width + 0.5}
-                    stroke="black"
-                    strokeWidth="0.1"
                 />
             )
         }
@@ -51,6 +49,7 @@ export default class Board extends Component{
                 // Every position has an empty rectangle for detecting hover.
                 spaces.push(
                     <rect
+                        key={`space-${x},${y}`}
                         x={x}
                         y={y}
                         height="1"
@@ -63,6 +62,7 @@ export default class Board extends Component{
                 if (position.move) {
                     moves.push(
                         <text
+                            key={`stone-${x},${y}`}
                             x={x}
                             y={y}
                             fontSize="1"
@@ -73,17 +73,15 @@ export default class Board extends Component{
         }
 
         return (
-            <div className="surface">
+            <div className="board">
                 <svg
-                    height="80vh"
-                    viewBox="1 1 19 19"
-                >
-                    <g>
-                        <rect x="1" y="1" width="100%" height="100%" fill="#f6b851"/>
-                        {lines}
-                        {spaces}
-                        {moves}
-                    </g>
+                    viewBox="1 1 19 19">
+                    <rect
+                        className="surface"
+                        x="1" y="1" width="100%" height="100%" />
+                    {lines}
+                    {spaces}
+                    {moves}
                 </svg>
             </div>
         )

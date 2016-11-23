@@ -1,0 +1,13 @@
+.game.theme-default {
+    .surface {
+        fill: #f6b851;
+    }
+
+    line {
+        shape-rendering: crispEdges;
+        vector-effect: non-scaling-stroke;
+        stroke-width: 1px;
+        stroke: #000;
+        opacity: .6;
+    }
+}

@@ -1,27 +1,38 @@
+@import 'themes/default';
+@import 'themes/black-and-white';
+
 body {
+    margin: 20px;
     background-color: #fafafa;
     color: #333;
     font-family: Arial, sans-serif;
 }
 
 header {
-    margin-bottom: 30px;
+    position: absolute;
+    line-height: 1em;
 }
 
 .game {
     display: flex;
+    margin-left: 64px;
 
-    .surface {
+    .board {
         flex: 3;
+
         .space {
             fill-opacity: 0;
         }
+
         .space:hover {
             fill: red;
             fill-opacity: 0.5;
         }
+
         svg {
+            height: 90vh;
             width: 100%;
+
             text {
                 transform: translate(0px, 1px);
             }

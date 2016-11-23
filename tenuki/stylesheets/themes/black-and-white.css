@@ -1,0 +1,12 @@
+.game.theme-black-and-white {
+    .surface {
+        fill: none;
+    }
+
+    line {
+        shape-rendering: crispEdges;
+        vector-effect: non-scaling-stroke;
+        stroke-width: 1px;
+        stroke: #000;
+    }
+}
