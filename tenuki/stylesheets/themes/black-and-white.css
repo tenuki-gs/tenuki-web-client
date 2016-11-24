@@ -3,10 +3,24 @@
         fill: none;
     }
 
-    line {
+    .gridline {
         shape-rendering: crispEdges;
         vector-effect: non-scaling-stroke;
         stroke-width: 1px;
         stroke: #000;
+    }
+
+    .stone {
+        stroke: #000;
+        stroke-width: .04;
+        stroke-location: inside;
+
+        &.⚫ {
+            fill: #000;
+        }
+
+        &.⚪ {
+            fill: #fff;
+        }
     }
 }
