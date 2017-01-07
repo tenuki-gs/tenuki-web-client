@@ -7,7 +7,8 @@ export default class Game extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            board: null
+            board: null,
+            theme: 'default'
         };
     }
 
@@ -23,15 +24,23 @@ export default class Game extends Component {
         }
 
         return (
-            <div className="game">
+            <div className={'game theme-' + this.state.theme}>
                 <Board
                     board={this.state.board}
                     onMove={this.props.game.addMove}
                 />
-                <div className="moves">
-                    Game ID: {this.props.game.id}
-                    <br /><br />
-                    <Moves game={this.props.game}/>
+
+                <div className="info">
+                    <div>Game ID: {this.props.game.id}</div>
+                    <div>
+                        <label>Theme: </label>
+                        <select onChange={event => {
+                                this.setState({theme: event.target.value});
+                        }}>
+                            <option value="default">Default</option>
+                            <option value="black-and-white">Black And White</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         );

@@ -1,0 +1,29 @@
+@charset 'UTF-8';
+
+.game.theme-default {
+    .surface {
+        fill: #f6b851;
+    }
+
+    .gridline {
+        shape-rendering: crispEdges;
+        vector-effect: non-scaling-stroke;
+        stroke-width: 1px;
+        stroke: #000;
+        opacity: .6;
+    }
+
+    .stone {
+        stroke: rgba(0, 0, 0, .6);
+        stroke-width: .04;
+        stroke-location: inside;
+
+        &.⚫ {
+            fill: #222;
+        }
+
+        &.⚪ {
+            fill: #fff;
+        }
+    }
+}
