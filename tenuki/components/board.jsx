@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Stone from './stone';
+import StarPoint from './starpoint';
 
 export default class Board extends Component{
     constructor(props) {
@@ -11,9 +12,50 @@ export default class Board extends Component{
         this.props.onMove({x, y});
     }
 
+    renderStarPoints(width, height) {
+        /*
+        Return StarPoint components translated to positions calculated
+        based on the size of the board.
+        */
+        const cornerWidth = width < 13 ? 3 : 4;
+        const cornerHeight = height < 13 ? 3 : 4;
+
+        // Points is a list of [x, y] coordinates.
+        // Initialize it with all the corner points.
+        let points = [
+            [cornerWidth, cornerHeight],
+            [width - cornerWidth + 1, cornerHeight],
+            [cornerWidth, height - cornerHeight + 1],
+            [width - cornerWidth + 1, height - cornerHeight + 1],
+        ];
+
+        // Add a star point in the middle if the board has odd dimensions.
+        if (width % 2 == 1 && height % 2 == 1) {
+            points.push([Math.ceil(width / 2), Math.ceil(height / 2)]);
+        }
+
+        // Add star points between corners if the board is big enough and that
+        // dimension is odd.
+        if (width > 13 && width % 2 == 1) {
+            points.push([Math.ceil(width / 2), cornerHeight]);
+            points.push([Math.ceil(width / 2), height - cornerHeight + 1]);
+        }
+        if (height > 13 && height % 2 == 1) {
+            points.push([cornerWidth, Math.ceil(height / 2)]);
+            points.push([width - cornerWidth + 1, Math.ceil(height / 2)]);
+        }
+
+        return points.map(([x, y]) => (
+            <g
+                key={`star-point-${x},${y}`}
+                transform={`translate(${x}, ${y})`}>
+                <StarPoint />
+            </g>
+        ));
+    }
+
     render() {
-        const width = this.props.board.width;
-        const height = this.props.board.height;
+        const {width, height} = this.props.board;
         const lines = [];
         const spaces = [];
         const moves = [];
@@ -25,7 +67,7 @@ export default class Board extends Component{
                     className="gridline row"
                     x1="1.5"
                     y1={y}
-                    x2={height + 0.5}
+                    x2={width + 0.5}
                     y2={y}
                 />
             )
@@ -39,7 +81,7 @@ export default class Board extends Component{
                     x1={x}
                     y1="1.5"
                     x2={x}
-                    y2={width + 0.5}
+                    y2={height + 0.5}
                 />
             )
         }
@@ -76,11 +118,12 @@ export default class Board extends Component{
         return (
             <div className="board">
                 <svg
-                    viewBox="1 1 19 19">
+                    viewBox={[1, 1, width, height].join(' ')}>
                     <rect
                         className="surface"
                         x="1" y="1" width="100%" height="100%" />
                     {lines}
+                    {this.renderStarPoints(width, height)}
                     {spaces}
                     {moves}
                 </svg>
