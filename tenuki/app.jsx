@@ -2,9 +2,7 @@ require("./stylesheets/styles.scss");
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Firebase from 'firebase';
 
-import Board from './components/board';
 import Game from './components/game';
 import {FirebaseGoGame} from './models/game';
 
