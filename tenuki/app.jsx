@@ -3,8 +3,14 @@ require("./stylesheets/styles.scss");
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import {firebaseAuthentication} from './modules/authentication';
+
 import Game from './components/game';
 import {FirebaseGoGame} from './models/game';
+
+// Authenticate a user.
+let user = firebaseAuthentication.getCurrentUser();
+console.log(user)
 
 // Listen to a particular game.
 var gameID;
