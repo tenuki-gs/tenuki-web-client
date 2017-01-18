@@ -17,14 +17,6 @@ export default class Game extends Component {
         this.props.game.onNewBoard(board => this.setState({board}));
     }
 
-    //userLoggedIn(authData) {
-    //  this.setState({user: authData});
-    //}
-
-    //authError(errorData) {
-    //  this.setState({authError: errorData});
-    //}
-
     render() {
         if (!this.state.board) {
             // The board might be empty until the game initializes.

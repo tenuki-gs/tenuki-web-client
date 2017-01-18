@@ -9,7 +9,15 @@ import Game from './components/game';
 import {FirebaseGoGame} from './models/game';
 
 // Authenticate a user.
-let user = getCurrentUser();
+let success = (authData) => {
+    return authData;
+}
+
+let error = (errorData) => {
+    console.log('error: ', errorData);
+}
+
+let user = getCurrentUser(success, error);
 
 // Listen to a particular game.
 var gameID;
