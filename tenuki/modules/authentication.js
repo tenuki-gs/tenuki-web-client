@@ -2,23 +2,16 @@ import Firebase from 'firebase';
 
 const rootRef = new Firebase('https://crackling-heat-815.firebaseio.com/');
 
-let authentication = {
-}
+var getCurrentUser = () => {
+    let promise = rootRef.authAnonymously().then(success).catch(error);
 
-let firebaseAuthentication = {
-    getCurrentUser() {
-        var user;
-        var authDataCallback = (authData) => {
-            if (authData) {
-                user = authData;
-            } else {
-                rootRef.authAnonymously();
-            }
-        };
+    let success = (authData) => {
+        return authData;
+    }
 
-        rootRef.onAuth(authDataCallback);
-        return user;
+    let error = (errorData) => {
+        console.log('error: ', errorData);
     }
 }
 
-export {authentication, firebaseAuthentication}
+export {getCurrentUser}
