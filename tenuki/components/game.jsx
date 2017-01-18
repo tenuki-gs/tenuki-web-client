@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import Position from './position';
 import Moves from './moves';
 import Board from './board';
+import PlayersList from './playersList';
 
 export default class Game extends Component {
     constructor(props) {
         super(props);
         this.state = {
             board: null,
+            players: [{uid: 1234, color: '⚪'}, {uid: 5678, color: '⚫'}],
             theme: 'default'
         };
     }
@@ -32,6 +34,7 @@ export default class Game extends Component {
 
                 <div className="info">
                     <div>Game ID: {this.props.game.id}</div>
+                    <PlayersList players={this.state.players} />
                     <div>
                         <label>Theme: </label>
                         <select onChange={event => {
