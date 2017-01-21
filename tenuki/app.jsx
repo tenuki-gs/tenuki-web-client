@@ -3,8 +3,12 @@ require("./stylesheets/styles.scss");
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import {getCurrentUser} from './modules/authentication';
+
 import Game from './components/game';
 import {FirebaseGoGame} from './models/game';
+
+let user;
 
 // Listen to a particular game.
 var gameID;
@@ -15,11 +19,24 @@ if (document.location.hash) {
     document.location = '#/' + gameID;
 }
 
-let game = new FirebaseGoGame(gameID);
+// Authenticate a user.
+let success = (authData) => {
+    let game = new FirebaseGoGame(gameID);
+    game.newUser = authData;
 
-ReactDOM.render(
-    <Game game={game} />,
-    document.getElementById('content')
-);
+    ReactDOM.render(
+        <Game game={game} />,
+        document.getElementById('content')
+    );
 
-console.log("play somewhere else");
+    console.log("play somewhere else");
+}
+
+let error = (errorData) => {
+    console.log('error: ', errorData);
+}
+
+getCurrentUser(success, error);
+
+
+

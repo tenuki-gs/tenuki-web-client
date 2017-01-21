@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Position from './position';
 import Moves from './moves';
 import Board from './board';
-import PlayersList from './playersList';
+import UsersList from './usersList';
 
 export default class Game extends Component {
     constructor(props) {
@@ -34,7 +34,7 @@ export default class Game extends Component {
 
                 <div className="info">
                     <div>Game ID: {this.props.game.id}</div>
-                    <PlayersList players={this.props.game.players} />
+                    <UsersList players={this.props.game.players} observers={this.props.game.observers} />
                     <div>
                         <label>Theme: </label>
                         <select onChange={event => {

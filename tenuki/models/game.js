@@ -209,13 +209,16 @@ export class FirebaseGoGame extends GoGame {
     constructor(gameID) {
         super(gameID);
         this.addMove = this.addMove.bind(this);
-        this.addPlayer = this.addPlayer.bind(this);
+        this.addUser = this.addUser.bind(this);
 
         this.moves = [];
         this.players = [];
+        this.observers = [];
+        this.newUser = null;
         this.gameRef = rootRef.child('games/' + this.id);
         this.movesRef = this.gameRef.child('moves');
         this.playersRef = this.gameRef.child('players');
+        this.observersRef = this.gameRef.child('observers');
 
         // Create a new game if the current game ID references an empty game
         // and then listen for changes to it.
@@ -260,20 +263,37 @@ export class FirebaseGoGame extends GoGame {
                     });
                 });
 
+                this.observersRef.on('child_added', observerSnapshot => {
+                    const observer = observerSnapshot.val();
+                    this.observers.push(observer);
+                    this.callbacks.onNewBoard.forEach(callback => {
+                        callback(this.boardState);
+                    });
+                });
+
                 if (this.players.length < 2) {
-                    this.addPlayer({uid: 123, color: '⚫'});
+                    this.addUser(this.newUser, 'player');
+                } else {
+                    this.addUser(this.newUser, 'observer');
                 }
+
             } else {
                 console.error(error);
             }
         });
     }
 
-    addPlayer(player) {
-        this.playersRef.push({
-            uid: player.uid,
-            color: player.color
-        })
+    addUser(user, userStatus) {
+        if (userStatus === 'player') {
+            this.playersRef.push({
+                uid: user.uid,
+                color: 'orange'
+            })
+        } else if (userStatus === 'observer') {
+            this.observersRef.push({
+                uid: user.uid
+            })
+        }
     }
 
     addMove({x, y}) {
