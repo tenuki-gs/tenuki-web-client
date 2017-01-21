@@ -18,7 +18,12 @@ function createEmptyBoardState(width, height) {
     but 1-indexed. Since the rows and columns are objects, it should not be
     iterated over with any assumption about ordering.
     */
-    let boardState = {width, height};
+    let boardState = {
+        width,
+        height,
+        captures: []
+    };
+
     for (let x = 1; x <= width; ++x) {
         boardState[x] = {};
         for (let y = 1; y <= height; ++y) {
@@ -54,7 +59,7 @@ function getAdjacentPositions(boardState, x, y) {
 function getPositionsInGroup(boardState, x, y) {
     /*
     Return all the positions that are part of the same group, starting at
-    coordinate (x, y). This uses a breadth-first search and a search-mark.
+    coordinate (x, y). This uses a breadth-first search.
     */
     let position = boardState[x][y];
     if (!position.move) {
@@ -62,27 +67,31 @@ function getPositionsInGroup(boardState, x, y) {
     }
 
     const group = [];
+    const stone = position.move.stone;
+    const isCheckedByCoordinate = {};
+    const coordinateKey = p => p.x + ',' + p.y;
     const positionsToCheck = [position];
+
     while (position = positionsToCheck.pop()) {
         const {x, y} = position;
-        group.push(position);
-        position._search_mark = true;
 
-        for (let neighbor of getAdjacentPositions(boardState, x, y)) {
-            if (neighbor.move &&
-                neighbor.move.stone == position.move.stone &&
-                !neighbor._search_mark)
-            {
-                // This is a move of the same color that has not been checked.
-                positionsToCheck.push(neighbor);
+        // Note that the position is checked so it isn't checked again.
+        isCheckedByCoordinate[coordinateKey(position)] = true;
+
+        // Add the position to the group if it has a move that is the same kind
+        // of stone as the rest of the group. Expand the search from here.
+        if (position.move && position.move.stone == stone) {
+            group.push(position);
+
+            // Explore the neighboring positions that haven't been checked.
+            for (let neighbor of getAdjacentPositions(boardState, x, y)) {
+                if (!isCheckedByCoordinate[coordinateKey(neighbor)]) {
+                    positionsToCheck.push(neighbor);
+                }
             }
         }
     }
 
-    for (position of group) {
-        // This search-mark technique means the function is not thread-safe.
-        position._search_mark = undefined;
-    }
     return group;
 }
 
@@ -141,7 +150,8 @@ class GoGame {
         // previous board state.
         let newBoardState = {
             width: boardState.width,
-            height: boardState.height
+            height: boardState.height,
+            captures: boardState.captures,
         };
 
         for (let x = 1; x <= boardState.width; ++x) {
@@ -173,8 +183,16 @@ class GoGame {
                 {
                     // The move has captured this group!
                     for (let position of group) {
+                        if (position.move) {
+                            // TODO: There is a bug in the capturing logic that
+                            // causes a position to be included in a group
+                            // twice under certain circumstances. This results
+                            // in a null move and breaks the Capture component.
+                            // The check above should not be necessary if the
+                            // logic can be fixed.
+                            newBoardState.captures.push(position.move);
+                        }
                         position.move = null;
-                        position.marks.push('🔥');
                     }
                 }
             }
