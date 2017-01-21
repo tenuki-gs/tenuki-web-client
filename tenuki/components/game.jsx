@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import Captures from './captures';
-import Position from './position';
-import Moves from './moves';
 import Board from './board';
 import UsersList from './usersList';
 
