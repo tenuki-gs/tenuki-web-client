@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import Stone from './stone';
+import Stone from '../stone';
 import StarPoint from './starpoint';
 
-export default class Board extends Component{
+export default class Board extends Component {
     constructor(props) {
         super(props);
         this.onClick = this.onClick.bind(this);
