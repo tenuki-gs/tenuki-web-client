@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Captures from './captures';
 import Position from './position';
 import Moves from './moves';
 import Board from './board';
@@ -41,7 +42,10 @@ export default class Game extends Component {
                             <option value="black-and-white">Black And White</option>
                         </select>
                     </div>
+
+                    <Captures captures={this.state.board.captures} />
                 </div>
+
             </div>
         );
     }

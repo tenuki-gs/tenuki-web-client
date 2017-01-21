@@ -40,6 +40,22 @@ header {
         }
     }
 
+    .captures {
+        margin-top: 30px;
+
+        .capture {
+            width: 1ex;
+            display: inline-block;
+        }
+
+        .count {
+            color: #777;
+            font-size: 80%;
+            margin-left: 2ex;
+            line-height: 100%;
+        }
+    }
+
     .moves {
         // This div is just for debugging.
         flex: 1;
