@@ -129,6 +129,10 @@ class GoGame {
         // Override in concrete class.
     }
 
+    addPlayer(player) {
+        // Override in concrete class.
+    }
+
     reduceMove(boardState, move) {
         /*
         Given a board state and a new move, incorporate the move into the new
@@ -205,10 +209,13 @@ export class FirebaseGoGame extends GoGame {
     constructor(gameID) {
         super(gameID);
         this.addMove = this.addMove.bind(this);
+        this.addPlayer = this.addPlayer.bind(this);
 
         this.moves = [];
+        this.players = [];
         this.gameRef = rootRef.child('games/' + this.id);
         this.movesRef = this.gameRef.child('moves');
+        this.playersRef = this.gameRef.child('players');
 
         // Create a new game if the current game ID references an empty game
         // and then listen for changes to it.
@@ -244,10 +251,29 @@ export class FirebaseGoGame extends GoGame {
                         callback(this.boardState);
                     });
                 });
+
+                this.playersRef.on('child_added', playerSnapshot => {
+                    const player = playerSnapshot.val();
+                    this.players.push(player);
+                    this.callbacks.onNewBoard.forEach(callback => {
+                        callback(this.boardState);
+                    });
+                });
+
+                if (this.players.length < 2) {
+                    this.addPlayer({uid: 123, color: '⚫'});
+                }
             } else {
                 console.error(error);
             }
         });
+    }
+
+    addPlayer(player) {
+        this.playersRef.push({
+            uid: player.uid,
+            color: player.color
+        })
     }
 
     addMove({x, y}) {

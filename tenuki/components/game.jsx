@@ -9,7 +9,7 @@ export default class Game extends Component {
         super(props);
         this.state = {
             board: null,
-            players: [{uid: 1234, color: '⚪'}, {uid: 5678, color: '⚫'}],
+            players: [],
             theme: 'default'
         };
     }
@@ -34,7 +34,7 @@ export default class Game extends Component {
 
                 <div className="info">
                     <div>Game ID: {this.props.game.id}</div>
-                    <PlayersList players={this.state.players} />
+                    <PlayersList players={this.props.game.players} />
                     <div>
                         <label>Theme: </label>
                         <select onChange={event => {
