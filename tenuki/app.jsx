@@ -3,8 +3,21 @@ require("./stylesheets/styles.scss");
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import {getCurrentUser} from './modules/authentication';
+
 import Game from './components/game';
 import {FirebaseGoGame} from './models/game';
+
+// Authenticate a user.
+let success = (authData) => {
+    return authData;
+}
+
+let error = (errorData) => {
+    console.log('error: ', errorData);
+}
+
+let user = getCurrentUser(success, error);
 
 // Listen to a particular game.
 var gameID;
