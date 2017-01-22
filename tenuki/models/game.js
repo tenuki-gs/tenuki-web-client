@@ -210,6 +210,8 @@ export class FirebaseGoGame extends GoGame {
         super(gameID);
         this.addMove = this.addMove.bind(this);
         this.addUser = this.addUser.bind(this);
+        this.isNewUser = this.isNewUser.bind(this);
+        this.assignColors = this.assignColors.bind(this);
 
         this.moves = [];
         this.players = [];
@@ -263,6 +265,12 @@ export class FirebaseGoGame extends GoGame {
                     });
                 });
 
+                this.playersRef.on('child_changed', playerSnapshot => {
+                    this.callbacks.onNewBoard.forEach(callback => {
+                        callback(this.boardState);
+                    });
+                });
+
                 this.observersRef.on('child_added', observerSnapshot => {
                     const observer = observerSnapshot.val();
                     this.observers.push(observer);
@@ -271,9 +279,13 @@ export class FirebaseGoGame extends GoGame {
                     });
                 });
 
-                if (this.players.length < 2) {
+                if (this.players.length === 0 && this.isNewUser(this.newUser)) {
                     this.addUser(this.newUser, 'player');
-                } else {
+                } else if (this.players.length === 1 && this.isNewUser(this.newUser)) {
+                    this.addUser(this.newUser, 'player');
+                    this.assignColors();
+                } else if (this.isNewUser(this.newUser)){
+                    console.log('not here')
                     this.addUser(this.newUser, 'observer');
                 }
 
@@ -283,14 +295,41 @@ export class FirebaseGoGame extends GoGame {
         });
     }
 
+    assignColors() {
+        console.log('here')
+        if (Math.random() >= 0.5) {
+            this.players[0].color = '⚪';
+            this.players[1].color = '⚫';
+        } else {
+            this.players[1].color = '⚪';
+            this.players[0].color = '⚫';
+        }
+
+        this.players.forEach(player => {
+            this.playersRef.child(player.uid).update({
+                color: player.color
+            });
+        });
+    }
+
+    isNewUser(newUser) {
+        let result = true;
+        this.players.forEach(player => {
+            if (player.uid === newUser.uid) {
+                result = false;
+            }
+        });
+        return result;
+    }
+
     addUser(user, userStatus) {
         if (userStatus === 'player') {
-            this.playersRef.push({
+            this.playersRef.child(user.uid).set({
                 uid: user.uid,
-                color: 'orange'
+                color: null
             })
         } else if (userStatus === 'observer') {
-            this.observersRef.push({
+            this.observersRef.set({
                 uid: user.uid
             })
         }
