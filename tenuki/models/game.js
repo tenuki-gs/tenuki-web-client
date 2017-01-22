@@ -206,7 +206,7 @@ export class FirebaseGoGame extends GoGame {
     The interface presented by this class can be consumed by components.
     */
 
-    constructor(gameID) {
+    constructor(gameID, authData) {
         super(gameID);
         this.addMove = this.addMove.bind(this);
         this.addUser = this.addUser.bind(this);
@@ -216,7 +216,7 @@ export class FirebaseGoGame extends GoGame {
         this.moves = [];
         this.players = [];
         this.observers = [];
-        this.newUser = null;
+        this.user = authData;
         this.gameRef = rootRef.child('games/' + this.id);
         this.movesRef = this.gameRef.child('moves');
         this.playersRef = this.gameRef.child('players');
@@ -279,14 +279,13 @@ export class FirebaseGoGame extends GoGame {
                     });
                 });
 
-                if (this.players.length === 0 && this.isNewUser(this.newUser)) {
-                    this.addUser(this.newUser, 'player');
-                } else if (this.players.length === 1 && this.isNewUser(this.newUser)) {
-                    this.addUser(this.newUser, 'player');
+                if (this.players.length === 0 && this.isNewUser(this.user)) {
+                    this.addUser(this.user, 'player');
+                } else if (this.players.length === 1 && this.isNewUser(this.user)) {
+                    this.addUser(this.user, 'player');
                     this.assignColors();
-                } else if (this.isNewUser(this.newUser)){
-                    console.log('not here')
-                    this.addUser(this.newUser, 'observer');
+                } else if (this.isNewUser(this.user)){
+                    this.addUser(this.user, 'observer');
                 }
 
             } else {
@@ -296,7 +295,6 @@ export class FirebaseGoGame extends GoGame {
     }
 
     assignColors() {
-        console.log('here')
         if (Math.random() >= 0.5) {
             this.players[0].color = '⚪';
             this.players[1].color = '⚫';
@@ -312,10 +310,10 @@ export class FirebaseGoGame extends GoGame {
         });
     }
 
-    isNewUser(newUser) {
+    isNewUser(user) {
         let result = true;
         this.players.forEach(player => {
-            if (player.uid === newUser.uid) {
+            if (player.uid === user.uid) {
                 result = false;
             }
         });

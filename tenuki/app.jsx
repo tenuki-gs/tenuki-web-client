@@ -8,8 +8,6 @@ import {getCurrentUser} from './modules/authentication';
 import Game from './components/game';
 import {FirebaseGoGame} from './models/game';
 
-let user;
-
 // Listen to a particular game.
 var gameID;
 if (document.location.hash) {
@@ -21,8 +19,7 @@ if (document.location.hash) {
 
 // Authenticate a user.
 let success = (authData) => {
-    let game = new FirebaseGoGame(gameID);
-    game.newUser = authData;
+    let game = new FirebaseGoGame(gameID, authData);
 
     ReactDOM.render(
         <Game game={game} />,

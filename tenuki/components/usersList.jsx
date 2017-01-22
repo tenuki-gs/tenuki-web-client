@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 export default class UsersList extends Component {
-    displayPlayers() {
+    renderPlayers() {
         return this.props.players.map((player) => {
             return(
                 <li key={player.uid}>
@@ -12,7 +12,7 @@ export default class UsersList extends Component {
         });
     }
 
-    displayObservers() {
+    renderObservers() {
         return this.props.observers.map((user) => {
             return(
                 <li key={user.uid}>
@@ -27,11 +27,11 @@ export default class UsersList extends Component {
             <div>
                 <p>Current Players</p>
                 <ul>
-                    {this.displayPlayers()}
+                    {this.renderPlayers()}
                 </ul>
                 <p>Current Observers</p>
                 <ul>
-                    {this.displayObservers()}
+                    {this.renderObservers()}
                 </ul>
             </div>
         )
