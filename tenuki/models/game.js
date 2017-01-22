@@ -301,14 +301,14 @@ export class FirebaseGoGame extends GoGame {
                 });
 
                 this.playersRef.on('child_changed', playerSnapshot => {
-                    var updatedPlayer = this.players.filter(player => {
+                    var updatedPlayer = this.players.find(player => {
                         return player.uid === playerSnapshot.val().uid
-                    })[0];
-
-                    this.players[updatedPlayer].color = playerSnapshot.val().color
-                    this.callbacks.onNewBoard.forEach(callback => {
-                        callback(this.boardState);
                     });
+
+                    updatedPlayer.color = playerSnapshot.val().color
+                      this.callbacks.onNewBoard.forEach(callback => {
+                          callback(this.boardState);
+                      });
                 });
 
                 this.observersRef.on('child_added', observerSnapshot => {

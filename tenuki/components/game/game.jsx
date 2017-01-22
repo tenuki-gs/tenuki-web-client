@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Captures from './captures';
 import Board from './board';
 import UsersList from './usersList';
+import WhoseTurnIsIt from './whoseTurnIsIt';
 
 export default class Game extends Component {
     constructor(props) {
@@ -35,6 +36,7 @@ export default class Game extends Component {
                 <div className="info">
                     <div>Game ID: {this.props.game.id}</div>
                     <UsersList players={this.props.game.players} observers={this.props.game.observers} />
+                    <WhoseTurnIsIt players={this.props.game.players} isItMyTurn={this.props.game.isItMyTurn()} />
                     <div>
                         <label>Theme: </label>
                         <select onChange={event => {
