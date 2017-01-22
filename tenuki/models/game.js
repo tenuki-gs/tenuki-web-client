@@ -369,10 +369,14 @@ export class FirebaseGoGame extends GoGame {
     }
 
     addMove({x, y}) {
-        this.gameRef.child('moves').push({
-            x, y,
-            stone: this.moves.length % 2 ? '⚪' : '⚫',
-            dateCreated: Firebase.ServerValue.TIMESTAMP
-        });
+        if (this.isItMyTurn()) {
+            this.gameRef.child('moves').push({
+                x, y,
+                stone: this.moves.length % 2 ? '⚪' : '⚫',
+                dateCreated: Firebase.ServerValue.TIMESTAMP
+            });
+        } else {
+            console.log('not your turn')
+        }
     }
 }
