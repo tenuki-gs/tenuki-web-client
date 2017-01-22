@@ -24,8 +24,8 @@ export default class Board extends Component {
                             y={y}
                             height="1"
                             width="1"
-                            onClick={this.props.onMove.bind(null, {x, y})}
-                            className="space"
+                            onClick={ this.props.isItMyTurn ? this.props.onMove.bind(null, {x, y}) : null }
+                            className={ this.props.isItMyTurn ? "space" : "space-no-click" }
                         />
                     )
                 }

@@ -125,6 +125,8 @@ class GoGame {
     constructor(gameID) {
         this.id = gameID;
         this.rules = defaultRules;
+        this.players = [];
+        this.currentPlayer = {};
         this.callbacks = {
             onNewBoard: [],
         }
@@ -138,8 +140,24 @@ class GoGame {
         // Override in concrete class.
     }
 
-    addPlayer(player) {
-        // Override in concrete class.
+    getCurrentPlayer(players) {
+        return players.filter(player => {
+            return player.uid === rootRef.getAuth().uid;
+        })[0];
+    }
+
+    isItMyTurn() {
+        if (this.players.length >= 2) {
+            var myColor = this.getCurrentPlayer(this.players).color
+            var evenMoves = this.moves.length % 2
+            if ((!evenMoves && myColor === '⚫') || (evenMoves && myColor === '⚪')) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
     reduceMove(boardState, move) {
@@ -232,7 +250,6 @@ export class FirebaseGoGame extends GoGame {
         this.assignColors = this.assignColors.bind(this);
 
         this.moves = [];
-        this.players = [];
         this.observers = [];
         this.user = authData;
         this.gameRef = rootRef.child('games/' + this.id);

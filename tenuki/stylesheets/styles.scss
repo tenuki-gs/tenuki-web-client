@@ -25,6 +25,11 @@ header {
             cursor: pointer;
         }
 
+        .space-no-click {
+            fill-opacity: 0;
+            cursor: default;
+        }
+
         .space:hover {
             fill: red;
             fill-opacity: 0.5;

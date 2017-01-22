@@ -28,6 +28,7 @@ export default class Game extends Component {
             <div className={'game theme-' + this.state.theme}>
                 <Board
                     board={this.state.board}
+                    isItMyTurn={this.props.game.isItMyTurn()}
                     onMove={this.props.game.addMove}
                 />
 
