@@ -138,6 +138,10 @@ class GoGame {
         // Override in concrete class.
     }
 
+    addPlayer(player) {
+        // Override in concrete class.
+    }
+
     reduceMove(boardState, move) {
         /*
         Given a board state and a new move, incorporate the move into the new
@@ -220,13 +224,21 @@ export class FirebaseGoGame extends GoGame {
     The interface presented by this class can be consumed by components.
     */
 
-    constructor(gameID) {
+    constructor(gameID, authData) {
         super(gameID);
         this.addMove = this.addMove.bind(this);
+        this.addUser = this.addUser.bind(this);
+        this.isNewUser = this.isNewUser.bind(this);
+        this.assignColors = this.assignColors.bind(this);
 
         this.moves = [];
+        this.players = [];
+        this.observers = [];
+        this.user = authData;
         this.gameRef = rootRef.child('games/' + this.id);
         this.movesRef = this.gameRef.child('moves');
+        this.playersRef = this.gameRef.child('players');
+        this.observersRef = this.gameRef.child('observers');
 
         // Create a new game if the current game ID references an empty game
         // and then listen for changes to it.
@@ -262,10 +274,81 @@ export class FirebaseGoGame extends GoGame {
                         callback(this.boardState);
                     });
                 });
+
+                this.playersRef.on('child_added', playerSnapshot => {
+                    const player = playerSnapshot.val();
+                    this.players.push(player);
+                    this.callbacks.onNewBoard.forEach(callback => {
+                        callback(this.boardState);
+                    });
+                });
+
+                this.playersRef.on('child_changed', playerSnapshot => {
+                    this.callbacks.onNewBoard.forEach(callback => {
+                        callback(this.boardState);
+                    });
+                });
+
+                this.observersRef.on('child_added', observerSnapshot => {
+                    const observer = observerSnapshot.val();
+                    this.observers.push(observer);
+                    this.callbacks.onNewBoard.forEach(callback => {
+                        callback(this.boardState);
+                    });
+                });
+
+                if (this.players.length === 0 && this.isNewUser(this.user)) {
+                    this.addUser(this.user, 'player');
+                } else if (this.players.length === 1 && this.isNewUser(this.user)) {
+                    this.addUser(this.user, 'player');
+                    this.assignColors();
+                } else if (this.isNewUser(this.user)){
+                    this.addUser(this.user, 'observer');
+                }
+
             } else {
                 console.error(error);
             }
         });
+    }
+
+    assignColors() {
+        if (Math.random() >= 0.5) {
+            this.players[0].color = '⚪';
+            this.players[1].color = '⚫';
+        } else {
+            this.players[1].color = '⚪';
+            this.players[0].color = '⚫';
+        }
+
+        this.players.forEach(player => {
+            this.playersRef.child(player.uid).update({
+                color: player.color
+            });
+        });
+    }
+
+    isNewUser(user) {
+        let result = true;
+        this.players.forEach(player => {
+            if (player.uid === user.uid) {
+                result = false;
+            }
+        });
+        return result;
+    }
+
+    addUser(user, userStatus) {
+        if (userStatus === 'player') {
+            this.playersRef.child(user.uid).set({
+                uid: user.uid,
+                color: null
+            })
+        } else if (userStatus === 'observer') {
+            this.observersRef.set({
+                uid: user.uid
+            })
+        }
     }
 
     addMove({x, y}) {
