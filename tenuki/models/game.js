@@ -301,6 +301,11 @@ export class FirebaseGoGame extends GoGame {
                 });
 
                 this.playersRef.on('child_changed', playerSnapshot => {
+                    var updatedPlayer = this.players.filter(player => {
+                        return player.uid === playerSnapshot.val().uid
+                    })[0];
+
+                    this.players[updatedPlayer].color = playerSnapshot.val().color
                     this.callbacks.onNewBoard.forEach(callback => {
                         callback(this.boardState);
                     });
@@ -339,8 +344,9 @@ export class FirebaseGoGame extends GoGame {
         }
 
         this.players.forEach(player => {
-            this.playersRef.child(player.uid).update({
-                color: player.color
+            this.playersRef.child(player.uid).set({
+                color: player.color,
+                uid: player.uid
             });
         });
     }
