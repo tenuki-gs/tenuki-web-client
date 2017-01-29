@@ -125,6 +125,8 @@ class GoGame {
     constructor(gameID) {
         this.id = gameID;
         this.rules = defaultRules;
+        this.players = [];
+        this.currentPlayer = null;
         this.callbacks = {
             onNewBoard: [],
         }
@@ -138,8 +140,24 @@ class GoGame {
         // Override in concrete class.
     }
 
-    addPlayer(player) {
-        // Override in concrete class.
+    getCurrentPlayer(players) {
+        return players.filter(player => {
+            return player.uid === this.user.uid;
+        })[0];
+    }
+
+    isItMyTurn() {
+        if (this.players.length >= 2) {
+            const myColor = this.getCurrentPlayer(this.players).color
+            var isEvenMove = this.moves.length % 2
+            if ((!isEvenMove && myColor === '⚫') || (isEvenMove && myColor === '⚪')) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
     reduceMove(boardState, move) {
@@ -232,7 +250,6 @@ export class FirebaseGoGame extends GoGame {
         this.assignColors = this.assignColors.bind(this);
 
         this.moves = [];
-        this.players = [];
         this.observers = [];
         this.user = authData;
         this.gameRef = rootRef.child('games/' + this.id);
@@ -284,9 +301,14 @@ export class FirebaseGoGame extends GoGame {
                 });
 
                 this.playersRef.on('child_changed', playerSnapshot => {
-                    this.callbacks.onNewBoard.forEach(callback => {
-                        callback(this.boardState);
+                    const updatedPlayer = this.players.find(player => {
+                        return player.uid === playerSnapshot.val().uid
                     });
+
+                    updatedPlayer.color = playerSnapshot.val().color
+                        this.callbacks.onNewBoard.forEach(callback => {
+                            callback(this.boardState);
+                      });
                 });
 
                 this.observersRef.on('child_added', observerSnapshot => {
@@ -322,8 +344,9 @@ export class FirebaseGoGame extends GoGame {
         }
 
         this.players.forEach(player => {
-            this.playersRef.child(player.uid).update({
-                color: player.color
+            this.playersRef.child(player.uid).set({
+                color: player.color,
+                uid: player.uid
             });
         });
     }
@@ -352,10 +375,12 @@ export class FirebaseGoGame extends GoGame {
     }
 
     addMove({x, y}) {
-        this.gameRef.child('moves').push({
-            x, y,
-            stone: this.moves.length % 2 ? '⚪' : '⚫',
-            dateCreated: Firebase.ServerValue.TIMESTAMP
-        });
+        if (this.isItMyTurn()) {
+            this.gameRef.child('moves').push({
+                x, y,
+                stone: this.moves.length % 2 ? '⚪' : '⚫',
+                dateCreated: Firebase.ServerValue.TIMESTAMP
+            });
+        }
     }
 }

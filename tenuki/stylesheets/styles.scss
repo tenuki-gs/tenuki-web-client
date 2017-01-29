@@ -20,22 +20,27 @@ header {
     .board {
         flex: 3;
 
-        .space {
-            fill-opacity: 0;
-            cursor: pointer;
-        }
-
-        .space:hover {
-            fill: red;
-            fill-opacity: 0.5;
-        }
-
         svg {
             height: 90vh;
             width: 100%;
 
             text {
                 transform: translate(0px, 1px);
+            }
+        }
+
+        .space {
+            fill-opacity: 0;
+        }
+
+        &.playable {
+            .space {
+                cursor: pointer;
+            }
+
+            .space:hover {
+                fill: red;
+                fill-opacity: 0.5;
             }
         }
     }
