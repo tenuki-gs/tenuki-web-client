@@ -24,8 +24,8 @@ export default class Board extends Component {
                             y={y}
                             height="1"
                             width="1"
-                            onClick={ this.props.isItMyTurn ? this.props.onMove.bind(null, {x, y}) : null }
-                            className={ this.props.isItMyTurn ? "space" : "space-no-click" }
+                            onClick={this.props.isItMyTurn ? this.props.onMove.bind(null, {x, y}) : null}
+                            className="space"
                         />
                     )
                 }
@@ -33,7 +33,7 @@ export default class Board extends Component {
         }
 
         return (
-            <div className="board">
+            <div className={this.props.isItMyTurn ? "playable board" : "board"}>
                 <svg
                     viewBox={[1, 1, width, height].join(' ')}>
                     <rect

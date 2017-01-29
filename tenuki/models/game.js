@@ -126,7 +126,7 @@ class GoGame {
         this.id = gameID;
         this.rules = defaultRules;
         this.players = [];
-        this.currentPlayer = {};
+        this.currentPlayer = null;
         this.callbacks = {
             onNewBoard: [],
         }
@@ -142,15 +142,15 @@ class GoGame {
 
     getCurrentPlayer(players) {
         return players.filter(player => {
-            return player.uid === rootRef.getAuth().uid;
+            return player.uid === this.user.uid;
         })[0];
     }
 
     isItMyTurn() {
         if (this.players.length >= 2) {
-            var myColor = this.getCurrentPlayer(this.players).color
-            var evenMoves = this.moves.length % 2
-            if ((!evenMoves && myColor === '⚫') || (evenMoves && myColor === '⚪')) {
+            const myColor = this.getCurrentPlayer(this.players).color
+            var isEvenMove = this.moves.length % 2
+            if ((!isEvenMove && myColor === '⚫') || (isEvenMove && myColor === '⚪')) {
                 return true;
             } else {
                 return false;
@@ -301,13 +301,13 @@ export class FirebaseGoGame extends GoGame {
                 });
 
                 this.playersRef.on('child_changed', playerSnapshot => {
-                    var updatedPlayer = this.players.find(player => {
+                    const updatedPlayer = this.players.find(player => {
                         return player.uid === playerSnapshot.val().uid
                     });
 
                     updatedPlayer.color = playerSnapshot.val().color
-                      this.callbacks.onNewBoard.forEach(callback => {
-                          callback(this.boardState);
+                        this.callbacks.onNewBoard.forEach(callback => {
+                            callback(this.boardState);
                       });
                 });
 
@@ -381,8 +381,6 @@ export class FirebaseGoGame extends GoGame {
                 stone: this.moves.length % 2 ? '⚪' : '⚫',
                 dateCreated: Firebase.ServerValue.TIMESTAMP
             });
-        } else {
-            console.log('not your turn')
         }
     }
 }
