@@ -1,4 +1,6 @@
 import Firebase from 'firebase';
+import ObservableModel from './observable';
+
 
 const defaultRules = {
     board: {
@@ -121,15 +123,13 @@ function getLibertiesOfGroup(boardState, group) {
 }
 
 
-class GoGame {
+class GoGame extends ObservableModel {
     constructor(gameID) {
+        super();
         this.id = gameID;
         this.rules = defaultRules;
         this.players = [];
         this.currentPlayer = null;
-        this.callbacks = {
-            onNewBoard: [],
-        }
 
         // The board state is 1-indexed. Don't fuck it up.
         this.boardState = createEmptyBoardState(
@@ -222,17 +222,6 @@ class GoGame {
 
         return newBoardState;
     }
-
-    onNewBoard(callback) {
-        /*
-        Add a function to be called any time the game state changes.
-        The function is bound such that `this` is the Game object.
-        */
-        if (this.callbacks.onNewBoard.indexOf(callback) === -1) {
-            this.callbacks.onNewBoard.push(callback.bind(this));
-        }
-        callback.call(this, this.boardState);
-    }
 }
 
 
@@ -287,17 +276,13 @@ export class FirebaseGoGame extends GoGame {
 
                     this.moves.push(move);
                     this.boardState = this.reduceMove(this.boardState, move);
-                    this.callbacks.onNewBoard.forEach(callback => {
-                        callback(this.boardState);
-                    });
+                    this.change();
                 });
 
                 this.playersRef.on('child_added', playerSnapshot => {
                     const player = playerSnapshot.val();
                     this.players.push(player);
-                    this.callbacks.onNewBoard.forEach(callback => {
-                        callback(this.boardState);
-                    });
+                    this.change();
                 });
 
                 this.playersRef.on('child_changed', playerSnapshot => {
@@ -305,18 +290,14 @@ export class FirebaseGoGame extends GoGame {
                         return player.uid === playerSnapshot.val().uid
                     });
 
-                    updatedPlayer.color = playerSnapshot.val().color
-                        this.callbacks.onNewBoard.forEach(callback => {
-                            callback(this.boardState);
-                      });
+                    updatedPlayer.color = playerSnapshot.val().color;
+                    this.change();
                 });
 
                 this.observersRef.on('child_added', observerSnapshot => {
                     const observer = observerSnapshot.val();
                     this.observers.push(observer);
-                    this.callbacks.onNewBoard.forEach(callback => {
-                        callback(this.boardState);
-                    });
+                    this.change();
                 });
 
                 if (this.players.length === 0 && this.isNewUser(this.user)) {

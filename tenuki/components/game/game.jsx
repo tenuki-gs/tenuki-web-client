@@ -16,7 +16,9 @@ export default class Game extends Component {
 
     componentDidMount() {
         // Listen for changes to the board.
-        this.props.game.onNewBoard(board => this.setState({board}));
+        this.props.game.onChange(game => this.setState({
+            board: game.boardState
+        }));
     }
 
     render() {
