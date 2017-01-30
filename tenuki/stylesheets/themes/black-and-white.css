@@ -1,26 +1,47 @@
 .game.theme-black-and-white {
-    .surface {
-        fill: none;
-    }
-
-    .gridline {
-        shape-rendering: crispEdges;
-        vector-effect: non-scaling-stroke;
-        stroke-width: 1px;
-        stroke: #000;
-    }
-
-    .stone {
-        stroke: #000;
-        stroke-width: .04;
-        stroke-location: inside;
-
-        &.⚫ {
-            fill: #000;
+    .board {
+        .surface {
+            fill: none;
         }
 
-        &.⚪ {
-            fill: #fff;
+        .gridline {
+            shape-rendering: crispEdges;
+            vector-effect: non-scaling-stroke;
+            stroke-width: 1px;
+            stroke: #000;
+        }
+
+        .stone {
+            stroke: #000;
+            stroke-width: .04;
+            stroke-location: inside;
+
+            &.⚫ {
+                fill: #000;
+            }
+
+            &.⚪ {
+                fill: #fff;
+            }
+        }
+
+        .move {
+            .last-move-marker {
+                fill: none;
+                stroke-width: .07;
+            }
+
+            &.⚫ {
+                .last-move-marker {
+                    stroke: #fff;
+                }
+            }
+
+            &.⚪ {
+                .last-move-marker {
+                    stroke: #000;
+                }
+            }
         }
     }
 }

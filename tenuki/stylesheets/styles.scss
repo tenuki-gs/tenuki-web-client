@@ -33,7 +33,16 @@ header {
             fill-opacity: 0;
         }
 
+        .last-move-marker {
+            display: none;
+            fill: #999;
+        }
+
         &.playable {
+            .last-move-marker {
+                display: inherit;
+            }
+
             .space {
                 cursor: pointer;
             }
