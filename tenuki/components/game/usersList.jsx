@@ -15,8 +15,8 @@ export default class UsersList extends Component {
     renderObservers() {
         return this.props.observers.map((user) => {
             return(
-                <li key={user.uid}>
-                    <div>ID: {user.uid}</div>
+                <li key={user}>
+                    <div>ID: {user}</div>
                 </li>
             )
         });

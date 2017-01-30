@@ -130,6 +130,7 @@ class GoGame extends ObservableModel {
         this.rules = defaultRules;
         this.players = [];
         this.currentPlayer = null;
+        this.observers = [];
 
         // The board state is 1-indexed. Don't fuck it up.
         this.boardState = createEmptyBoardState(
@@ -148,15 +149,17 @@ class GoGame extends ObservableModel {
 
     isItMyTurn() {
         if (this.players.length >= 2) {
-            const myColor = this.getCurrentPlayer(this.players).color
-            var isEvenMove = this.moves.length % 2
-            if ((!isEvenMove && myColor === '⚫') || (isEvenMove && myColor === '⚪')) {
-                return true;
+            if (this.getCurrentPlayer(this.players)) {
+                const myColor = this.getCurrentPlayer(this.players).color
+                var isEvenMove = this.moves.length % 2
+                if ((!isEvenMove && myColor === '⚫') || (isEvenMove && myColor === '⚪')) {
+                    return true;
+                } else {
+                    return false;
+                }
             } else {
                 return false;
             }
-        } else {
-            return false;
         }
     }
 
@@ -239,7 +242,6 @@ export class FirebaseGoGame extends GoGame {
         this.assignColors = this.assignColors.bind(this);
 
         this.moves = [];
-        this.observers = [];
         this.user = authData;
         this.gameRef = rootRef.child('games/' + this.id);
         this.movesRef = this.gameRef.child('moves');
@@ -296,7 +298,7 @@ export class FirebaseGoGame extends GoGame {
 
                 this.observersRef.on('child_added', observerSnapshot => {
                     const observer = observerSnapshot.val();
-                    this.observers.push(observer);
+                    this.observers.push(observer.uid);
                     this.change();
                 });
 
@@ -349,7 +351,7 @@ export class FirebaseGoGame extends GoGame {
                 color: null
             })
         } else if (userStatus === 'observer') {
-            this.observersRef.set({
+            this.observersRef.push({
                 uid: user.uid
             })
         }
