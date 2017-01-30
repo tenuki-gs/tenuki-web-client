@@ -10,12 +10,26 @@ export default class Moves extends Component {
     render() {
         const {moves} = this.props;
 
+        // Figure out what the last move was so it can be marked.
+        let lastMove = null;
+        for (let move of moves) {
+            if (!lastMove || (move.dateCreated > lastMove.dateCreated)) {
+                lastMove = move;
+            }
+        }
+
         return <g className="moves">
-            {moves.map(({x, y, stone}) => (
+            {moves.map(move => (
                 <g
-                    key={`move-${x},${y}`}
-                    transform={`translate(${x}, ${y})`}>
-                    <Stone stone={stone} />
+                    className={`move ${move.stone}`}
+                    key={`move-${move.x},${move.y}`}
+                    transform={`translate(${move.x}, ${move.y})`}>
+                    <Stone stone={move.stone} />
+                    {lastMove === move
+                        ? <circle
+                            className="last-move-marker"
+                            cx=".5" cy=".5" r=".18" />
+                        : null}
                 </g>
             ))}
         </g>;
