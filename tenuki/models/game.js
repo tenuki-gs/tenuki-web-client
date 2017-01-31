@@ -152,7 +152,8 @@ class GoGame extends ObservableModel {
             if (this.getCurrentPlayer(this.players)) {
                 const myColor = this.getCurrentPlayer(this.players).color
                 var isEvenMove = this.moves.length % 2
-                if ((!isEvenMove && myColor === '⚫') || (isEvenMove && myColor === '⚪')) {
+                if ((!isEvenMove && myColor === '⚫') ||
+                    (isEvenMove && myColor === '⚪')) {
                     return true;
                 } else {
                     return false;
@@ -298,7 +299,7 @@ export class FirebaseGoGame extends GoGame {
 
                 this.observersRef.on('child_added', observerSnapshot => {
                     const observer = observerSnapshot.val();
-                    this.observers.push(observer.uid);
+                    this.observers.push(observer);
                     this.change();
                 });
 
