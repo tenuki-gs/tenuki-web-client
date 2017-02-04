@@ -38,7 +38,7 @@ export default class Game extends Component {
                 <div className="info">
                     <div>Game ID: {this.props.game.id}</div>
                     <UsersList players={this.props.game.players} observers={this.props.game.observers} />
-                    <WhoseTurnIsIt players={this.props.game.players} isItMyTurn={this.props.game.isItMyTurn()} />
+                    <WhoseTurnIsIt players={this.props.game.players} isItMyTurn={this.props.game.isItMyTurn()} isGameOver={this.props.game.isGameOver()} />
                     <div>
                         <label>Theme: </label>
                         <select onChange={event => {
@@ -47,6 +47,11 @@ export default class Game extends Component {
                             <option value="default">Default</option>
                             <option value="black-and-white">Black And White</option>
                         </select>
+                    </div>
+
+                    <div>
+                        <button disabled={this.props.game.isItMyTurn() ? false : true} onClick={this.props.game.isItMyTurn ? this.props.game.pass : null}>Pass</button>
+                        <div>{this.props.game.passMessage()}</div>
                     </div>
 
                     <Captures captures={this.state.board.captures} />

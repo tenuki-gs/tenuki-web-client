@@ -153,13 +153,45 @@ class GoGame extends ObservableModel {
                 const myColor = this.getCurrentPlayer(this.players).color
                 var isEvenMove = this.moves.length % 2
                 if ((!isEvenMove && myColor === '⚫') ||
-                    (isEvenMove && myColor === '⚪')) {
+                    (isEvenMove && myColor === '⚪') && !this.isGameOver()) {
                     return true;
                 } else {
                     return false;
                 }
             } else {
                 return false;
+            }
+        }
+    }
+
+    passMessage() {
+        var lastMove = this.moves.slice(-1)[0];
+        var currentPlayer = this.getCurrentPlayer(this.players);
+
+        if (this.isGameOver()) {
+            return(
+              'The game is over!'
+            )
+        }
+
+        if (lastMove && lastMove.pass && lastMove.stone != currentPlayer && this.isItMyTurn()) {
+            return(
+                'Your opponent has passed!'
+            )
+        } else if (lastMove && lastMove.pass && lastMove.stone != currentPlayer && !this.isItMyTurn()) {
+            return(
+                'You have passed!'
+            )
+        }
+    }
+
+    isGameOver() {
+        var ultimateMove = this.moves.slice(-1)[0];
+        var penultimateMove = this.moves.slice(-2)[0];
+
+        if (ultimateMove && penultimateMove) {
+            if (ultimateMove.pass && penultimateMove.pass) {
+                return true;
             }
         }
     }
@@ -194,31 +226,33 @@ class GoGame extends ObservableModel {
         // changing the previous board state. The first order of business is
         // to add the new move. We'll assume here that something upstream has
         // prevented any illegal moves from making it this far, so place it.
-        newBoardState[move.x][move.y].move = move;
+        if (!move.pass) {
+            newBoardState[move.x][move.y].move = move;
 
-        // Detect if this move captures anything.
-        const neighbors = getAdjacentPositions(newBoardState, move.x, move.y);
-        for (let neighbor of neighbors) {
-            // Is this a different player's stone?
-            if (neighbor.move && neighbor.move.stone != move.stone) {
-                // Check to see if the move is capturing:
-                const group = getPositionsInGroup(
-                    newBoardState, neighbor.x, neighbor.y);
-                if (group.length &&
-                    getLibertiesOfGroup(newBoardState, group).length == 0)
-                {
-                    // The move has captured this group!
-                    for (let position of group) {
-                        if (position.move) {
-                            // TODO: There is a bug in the capturing logic that
-                            // causes a position to be included in a group
-                            // twice under certain circumstances. This results
-                            // in a null move and breaks the Capture component.
-                            // The check above should not be necessary if the
-                            // logic can be fixed.
-                            newBoardState.captures.push(position.move);
+            // Detect if this move captures anything.
+            const neighbors = getAdjacentPositions(newBoardState, move.x, move.y);
+            for (let neighbor of neighbors) {
+                // Is this a different player's stone?
+                if (neighbor.move && neighbor.move.stone != move.stone) {
+                    // Check to see if the move is capturing:
+                    const group = getPositionsInGroup(
+                        newBoardState, neighbor.x, neighbor.y);
+                    if (group.length &&
+                        getLibertiesOfGroup(newBoardState, group).length == 0)
+                    {
+                        // The move has captured this group!
+                        for (let position of group) {
+                            if (position.move) {
+                                // TODO: There is a bug in the capturing logic that
+                                // causes a position to be included in a group
+                                // twice under certain circumstances. This results
+                                // in a null move and breaks the Capture component.
+                                // The check above should not be necessary if the
+                                // logic can be fixed.
+                                newBoardState.captures.push(position.move);
+                            }
+                            position.move = null;
                         }
-                        position.move = null;
                     }
                 }
             }
@@ -240,6 +274,7 @@ export class FirebaseGoGame extends GoGame {
         this.addMove = this.addMove.bind(this);
         this.addUser = this.addUser.bind(this);
         this.isNewUser = this.isNewUser.bind(this);
+        this.pass = this.pass.bind(this);
         this.assignColors = this.assignColors.bind(this);
 
         this.moves = [];
@@ -363,6 +398,15 @@ export class FirebaseGoGame extends GoGame {
             this.gameRef.child('moves').push({
                 x, y,
                 stone: this.moves.length % 2 ? '⚪' : '⚫',
+                dateCreated: Firebase.ServerValue.TIMESTAMP
+            });
+        }
+    }
+
+    pass() {
+        if (this.isItMyTurn()) {
+            this.gameRef.child('moves').push({
+                pass: true,
                 dateCreated: Firebase.ServerValue.TIMESTAMP
             });
         }
