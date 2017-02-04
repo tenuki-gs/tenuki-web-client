@@ -4,8 +4,10 @@ export default class WhoseTurnIsIt extends Component {
     playMessage() {
         if (this.props.isItMyTurn) {
             return 'Your turn. Make it count!'
-        } else {
+        } else if (!this.props.isGameOver) {
             return 'Waiting for other player. The Go gods reward patience.'
+        } else {
+            return;
         }
     }
 
